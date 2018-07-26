@@ -24,7 +24,7 @@
 
     - name: Install Gollum
       gem:
-        name: {{ items }}
+        name: {{ item }}
         state: present
       with_items:
         - gollum
