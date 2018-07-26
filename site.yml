@@ -1,0 +1,117 @@
+# Ansible Playbook for Subutai Gollum blueprint
+---
+
+- hosts: all
+  gather_facts: false
+  remote_user: root
+  tasks: 
+    - name: Install tools
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items: 
+        - ruby
+        - ruby-dev
+        - make
+        - zlib1g-dev
+        - libicu-dev
+        - build-essential
+        - git
+        - nginx
+        - ca-certificates
+      update_cache: yes
+      dpkg_options: force-confdef,force-confold,force-unsafe-io
+
+    - name: Install Gollum
+      gem:
+        name: {{ items }}
+        state: present
+      with_items:
+        - gollum
+    
+    - name: Create user
+      user:
+        name: gollum
+        shell: /bin/bash
+        create_home: yes
+        system: no
+
+    - name: Copy git configuration
+      copy:
+        src: git/gitconfig
+        dest: /home/gollum/.gitconfig
+        owner: gollum
+        group: gollum
+        mode: 0644
+
+    - name: Clean up
+      file:
+        path: /home/gollum/wiki
+        state: absent
+
+    - name: Create wiki directory
+      file:
+        path: /home/gollum/wiki
+        state: directory
+
+    - name: Initialize wiki repository
+      raw: cd /home/gollum/wiki && git init . && cd -
+
+    - name: Set file permissions
+      file:
+        dest: {{ item }}
+        owner: gollum
+        group: gollum
+        recurse: yes
+      with_items:
+        - /home/gollum/wiki
+
+    - name: Create App directory
+      file:
+        path: /usr/local/etc/gollum
+        state: directory
+    
+    - name: Copy App configuration
+      copy:
+        src: etc/config.rb
+        dest: /usr/local/etc/gollum/config.rb
+        user: root
+        group: root
+        mode: 0644
+
+    - name: Install gollum.service
+      copy:
+        src: systemd/gollum.service
+        dest: /lib/systemd/system/gollum.service
+        user: root
+        group: root
+        mode: 0644
+
+    - name: Start gollum.service
+      systemd:
+        name: gollum.service
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+    - name: Install nginx configuration
+      copy:
+        src: etc/gollum.conf
+        dest: /etc/nginx/sites-available/gollum.conf
+        user: root
+        group: root
+        mode: 0644
+
+    - name: Activate nginx configuration
+      file:
+        src: /etc/nginx/sites-available/gollum.conf
+        dest: /etc/nginx/sites-enabled/gollum.conf
+        state: link
+
+    - name: Restart nginx
+      systemd:
+        name: nginx.sevice
+        enabled: yes
+        state: restarted
+
+# vim: ts=2 et nowrap autoindent

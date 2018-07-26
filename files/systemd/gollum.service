@@ -1,0 +1,14 @@
+[Unit]
+Description=Gollum wiki server
+After=network.target
+
+[Service]
+Type=simple
+User=gollum
+Group=gollum
+WorkingDirectory=/home/gollum/wiki
+ExecStart=/usr/local/bin/gollum --config "/usr/local/etc/gollum/config.rb"
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
