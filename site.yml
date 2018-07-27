@@ -24,7 +24,7 @@
 
     - name: Install Gollum
       gem:
-        name: {{ item }}
+        name: "{{ item }}"
         state: present
       with_items:
         - gollum
@@ -59,7 +59,7 @@
 
     - name: Set file permissions
       file:
-        dest: {{ item }}
+        dest: "{{ item }}"
         owner: gollum
         group: gollum
         recurse: yes
