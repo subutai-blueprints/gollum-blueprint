@@ -9,6 +9,8 @@
       apt:
         name: "{{ item }}"
         state: present
+        update_cache: yes
+        dpkg_options: force-confdef,force-confold,force-unsafe-io
       with_items: 
         - ruby
         - ruby-dev
@@ -19,8 +21,6 @@
         - git
         - nginx
         - ca-certificates
-      update_cache: yes
-      dpkg_options: force-confdef,force-confold,force-unsafe-io
 
     - name: Install Gollum
       gem:
