@@ -75,7 +75,7 @@
       copy:
         src: etc/config.rb
         dest: /usr/local/etc/gollum/config.rb
-        user: root
+        owner: root
         group: root
         mode: 0644
 
@@ -83,7 +83,7 @@
       copy:
         src: systemd/gollum.service
         dest: /lib/systemd/system/gollum.service
-        user: root
+        owner: root
         group: root
         mode: 0644
 
@@ -98,7 +98,7 @@
       copy:
         src: etc/gollum.conf
         dest: /etc/nginx/sites-available/gollum.conf
-        user: root
+        owner: root
         group: root
         mode: 0644
 
