@@ -38,7 +38,7 @@
 
     - name: Copy git configuration
       copy:
-        src: git/gitconfig
+        src: etc/gitconfig
         dest: /home/gollum/.gitconfig
         owner: gollum
         group: gollum
