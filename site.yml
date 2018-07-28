@@ -109,6 +109,11 @@
         dest: /etc/nginx/sites-enabled/gollum.conf
         state: link
 
+    - name: Remove default configuration
+      file:
+        path: /etc/nginx/site-available/default
+        state: absent
+
     - name: Restart nginx
       service:
         name: nginx
