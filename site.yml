@@ -111,7 +111,7 @@
 
     - name: Remove default configuration
       file:
-        path: /etc/nginx/site-available/default
+        path: /etc/nginx/sites-available/default
         state: absent
 
     - name: Restart nginx
