@@ -109,8 +109,8 @@
         state: link
 
     - name: Restart nginx
-      systemd:
-        name: nginx.sevice
+      service:
+        name: nginx
         enabled: yes
         state: restarted
 
