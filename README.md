@@ -1,6 +1,7 @@
 # gollum-blueprint
 
 DESCRIPTION
+
 Gollum is a simple wiki system built on top of Git. A Gollum Wiki is simply a git repository of a specific nature:
 
 A Gollum repository's contents are human-editable text or markup files.
