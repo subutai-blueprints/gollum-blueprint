@@ -4,7 +4,13 @@
 - hosts: all
   gather_facts: false
   remote_user: root
-  tasks: 
+  tasks:
+  
+    - name: Upgrade debian
+      apt:
+        update_cache: true
+        upgrade: true
+
     - name: Install tools
       apt:
         name: "{{ item }}"
@@ -12,8 +18,8 @@
         update_cache: yes
         dpkg_options: force-confdef,force-confold,force-unsafe-io
       with_items: 
-        - ruby
-        - ruby-dev
+        - wget
+        - xz-utils
         - make
         - zlib1g-dev
         - libicu-dev
@@ -21,7 +27,37 @@
         - git
         - nginx
         - ca-certificates
+        - cmake
+        - libssl-dev
+        - pkg-config
 
+    - name: Extract Ruby 2.7.1 into /tmp
+      unarchive:
+        src: https://cache.ruby-lang.org/pub/ruby/2.7/ruby-2.7.1.tar.xz
+        dest: /tmp/
+        remote_src: yes
+        
+    - name: Configure Ruby 2.7.1
+      shell: ./configure chdir=/tmp/ruby-2.7.1
+      tags: packages, ruby
+        
+    - name: Make
+      shell: make chdir=/tmp/ruby-2.7.1
+      tags: packages, ruby
+        
+    - name: Install Ruby 2.7.1
+      shell: make install chdir=/tmp/ruby-2.7.1
+      become: yes
+      become_user: root
+      tags: packages, ruby
+      
+    - name: Remove tmp files used for Ruby 2.7.1 installation
+      file: path={{ item }} state=absent
+      with_items:
+        - /tmp/ruby-2.7.1.tar.xz
+        - /tmp/ruby-2.7.1
+      tags: packages, ruby   
+      
     - name: Install Gollum
       gem:
         name: "{{ item }}"
